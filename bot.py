@@ -10,7 +10,7 @@ def send_telegram_message(token, chat_id, message):
 
 def is_time_to_send_message():
     current_hour = datetime.datetime.now().hour
-    return not (23 <= current_hour or current_hour < 6)
+    return not (23 <= current_hour or current_hour < 3)
 
 def main():
     token = "6940871687:AAF2prfaM75J4tW0-2Vk0c8PYbJz3ko2UgA"
