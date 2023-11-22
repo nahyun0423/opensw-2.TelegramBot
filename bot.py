@@ -1,34 +1,27 @@
-import datetime
 import time
-from telegram import Bot
+import datetime
+import requests
 
-# 텔레그램 봇 토큰
-TELEGRAM_BOT_TOKEN = '6940871687:AAF2prfaM75J4tW0-2Vk0c8PYbJz3ko2UgA'
 
-# 채널 아이디 (개설 채널의 경우 @channelname 형식)
-CHANNEL_ID = '@opensource_test_bot'
+def send_telegram_message(token, chat_id, message):
+    base_url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={message}"
+    response = requests.get(base_url)
+    return response.json()
 
-def send_message(bot, chat_id, text):
-    bot.send_message(chat_id=chat_id, text=text)
+def is_time_to_send_message():
+    current_hour = datetime.datetime.now().hour
+    return not (23 <= current_hour or current_hour < 6)
 
 def main():
-    bot = Bot(token=TELEGRAM_BOT_TOKEN)
-    channel_id = CHANNEL_ID
+    token = "6940871687:AAF2prfaM75J4tW0-2Vk0c8PYbJz3ko2UgA"
+    chat_id = "6532805693"
 
     while True:
-        current_time = datetime.datetime.now().strftime("%H:%M")
-
-        # 11시부터 6시까지 메시지를 보내지 않음
-        if "23:00" <= current_time <= "06:00":
-            time.sleep(60 * 30)  # 30분 동안 대기
-            continue
-
-        # 30분마다 메시지 전송
-        if current_time.endswith(":00") or current_time.endswith(":30"):
-            message_text = "안녕하세요! 현재 시각은 {}입니다.".format(current_time)
-            send_message(bot, channel_id, message_text)
-
-        time.sleep(60)  # 1분 동안 대기
+        if is_time_to_send_message():
+            message = "send message"  
+            send_telegram_message(token, chat_id, message)
+        
+        time.sleep(30 * 60)
 
 if __name__ == "__main__":
     main()
